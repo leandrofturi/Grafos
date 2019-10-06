@@ -1,109 +1,80 @@
 #include <iostream>
-#include <vector>
 #include <list>
 
+#define Inf 251
 #define MIN(x, y) (x < y) ? x : y
-
-#define Inf 250
 
 // g++ desvioDeRota.cpp -o desvioDeRota
 
-class Problema
+int main()
 {
-public:
-    int N;
-    int M;
-    int C;
-    int K;
-    std::vector<std::vector<int> > matAdj;
-
-    void preencheAtributos();
-    void preencheMatAdj();
-    int resolucao();
-    int Dijkstra(int Vini);
-    int minDistancia(int V);
-};
-
-
-void Problema::preencheAtributos()
-{
-    std::cin >> this->N >> this->M >> this->C >> this->K;
-    this->matAdj.resize(this->N);
-    for (size_t i = 0; i < this->N; i++)
+    int N, M, C, K, i, j, k, aux, custo, sair;
+    while(1)
     {
-        this->matAdj[i].resize(this->N);
-    }
-}
+        sair = 1;
+        scanf(" %d %d %d %d", &N, &M, &C, &K);
+        if(!((4 <= N <= 250) && (3 <= M <= N*(N-1)/2) && (2 <= C <= N-1) && (C <= K <= N-1)))
+            return 0;
 
-void Problema::preencheMatAdj()
-{
-    int i, j, p;
-    for (size_t k = 0; k < this->M; k ++)
-    {
-        std::cin >> i >> j >> p;
-        this->matAdj[i][j] = p;
-    }
-}
+        int matAdj[N][N], d[N];
+        for(i = 0; i < N; i ++)
+            for(j = 0; j < i; j ++)
+                matAdj[i][j] = matAdj[j][i] = Inf;
 
-int Problema::resolucao()
-{
-    int d = 0;
-    if (this->K < (C-1))
-    {
-        for (size_t i = this->K; i < this->C; i++)
+        for(aux = 0; aux < M; aux ++)
         {
-            d += this->matAdj[i][i+1];
+            scanf(" %d %d %d", &i, &j, &k);
+            if(!((0 <= i) && (j <= N-1) && (i != j) && (0 <= k <= 250)))
+                return 0;
+            matAdj[i][j] = matAdj[j][i] = k;
         }
-        return d;
-    }
-    return this->Dijkstra(K);
-}
-
-int Problema::Dijkstra(int Vini)
-{
-    std::vector<int> d (this->N, Inf);
-    d[Vini] = 0;
-    std::list<int> aberto;
-    for (size_t i = 0; i < this->N; i++)
-    {
-        aberto.push_back(i);
-    }
-    aberto.remove(Vini);
-    int k, custo;
-    while(!aberto.empty())
-    {
-        k = this->minDistancia(Vini);
-        aberto.remove(k);
-        for (size_t i = 0; i < this->N; i++)
+        if(K < C-1)
         {
-            custo = MIN(d[i], d[k] + this->matAdj[k][i]);
-            if(custo < d[i])
+            d[C-1] = 0;
+            for(aux = K; aux < C; aux ++)
+                d[C-1] += matAdj[aux][aux+1];
+            std::cout << d[C-1] << std::endl;
+            sair = 0;
+        }
+        else
+        {
+            for(aux = 0; aux < N; aux ++)
+                d[aux] = Inf; 
+            d[K] = 0;
+            std::list<int> aberto;
+            std::list<int>::iterator itr;
+            for(aux = 0; aux < N; aux ++)
+                aberto.push_back(aux);
+            while((!aberto.empty()) && sair)
             {
-                d[i] = custo;
+                k = 0;
+                aux = Inf;
+                for (itr = aberto.begin(); itr != aberto.end(); itr++) 
+                {
+                    aux = MIN(aux, d[*itr]);
+                    k = (aux == d[*itr]) ? (*itr) : k;
+                }
+                if(k == C-1)
+                {
+                    std::cout << d[C-1] << std::endl;
+                    sair = 0;
+                }
+                else
+                {
+                    aberto.remove(k);
+                    for (itr = aberto.begin(); itr != aberto.end(); itr++) 
+                    {
+                        custo = MIN(d[*itr], d[k] + matAdj[k][*itr]);
+                        d[*itr] = (custo < d[*itr]) ? custo : d[*itr];
+                        if(*itr < C-1)
+                        {
+                            for(aux = (*itr)+1; aux < C-1; aux ++)
+                                d[*itr] += matAdj[aux-1][aux];
+                        }
+                    }
+                }
             }
         }
     }
-    return d[C-1];
-}
-
-int Problema::minDistancia(int V)
-{
-    int min = this->matAdj[V][0];
-    for (size_t i = 1; i < this->N; i++)
-    {
-        if(min > this->matAdj[V][i])
-        {
-            min = this->matAdj[V][i];
-        }
-    }
-    return min;
-}
-
-int main()
-{
-    Problema p;
-    p.preencheAtributos();
-    p.preencheMatAdj();
-    std::cout << p.resolucao() << std::endl;
     return 0;
 }
