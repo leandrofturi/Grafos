@@ -12,51 +12,72 @@ int main()
     {
         cont = 0;
         std::cin >> V >> E;
-        int aux[V] = {0};
+        int cc[V] = {0};
         for (size_t j = 0; j < E; j++)
         {
             std::cin >> a >> b;
-            if((aux[a-'a'] == 0) && (aux[b-'a'] == 0))
+            if(a > b)
+            {
+                SWAP(a, b);
+            }
+            if((cc[a-'a'] == 0) && (cc[b-'a'] == 0))
             {
                 cont ++;
-                aux[a-'a'] = aux[b-'a'] = cont;
+                cc[a-'a'] = cc[b-'a'] = cont;
             }
-            else if(aux[a-'a'] == 0)
+            else if(cc[a-'a'] == 0)
             {
-                aux[a-'a'] = aux[b-'a'];
+                cc[a-'a'] = cc[b-'a'];
+            }
+            else if(cc[b-'a'] == 0)
+            {
+                cc[b-'a'] = cc[a-'a'];
             }
             else
             {
-                aux[b-'a'] = aux[a-'a'];
+                for (size_t k = 0; k < b-'a'; k++)
+                {
+                    if(cc[k] == cc[b-'a'])
+                    {
+                        cc[k] = cc[a-'a'];
+                    }
+                }
+                for (size_t k = b-'a'+1; k < V; k++)
+                {
+                    if(cc[k] == cc[b-'a'])
+                    {
+                        cc[k] = cc[a-'a'];
+                    }
+                }
+                cc[b-'a'] = cc[a-'a'];
             }
         }
-
         std::cout << "Case #" << i+1 << ":" << std::endl;
+        cont = 0;
         for (size_t j = 0; j < V; j++)
         {
-            if(aux[j] == 0)
+            if(cc[j] == 0)
+            {
+                cont ++;
+                std::cout << (char) (j + 'a') << "," << std::endl;
+            }
+            else if(cc[j] != -1)
             {
                 cont ++;
                 std::cout << (char) (j + 'a') << ",";
-                std::cout << std::endl;
-            }
-            else if(aux[j] != -1)
-            {
-                std::cout << (char) (j + 'a') << ",";
                 for (size_t k = j+1; k < V; k++)
                 {
-                    if((aux[j] == aux[k]) && (aux[k] != -1))
+                    if((cc[k] == cc[j]))
                     {
                         std::cout << (char) (k + 'a') << ",";
-                        aux[k] = -1;
+                        cc[k] = -1;
                     }
                 }
                 std::cout << std::endl;
             }
-            aux[j] == -1;
+            cc[j] = -1;
         }
         std::cout << cont << " connected components" << std::endl << std::endl;
     }
-    std::cout << std::endl;
     return 0;
 }

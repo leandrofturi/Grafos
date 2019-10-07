@@ -1,80 +1,100 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include <list>
 
-#define Inf 251
+#define Inf 2147483647/2
 #define MIN(x, y) (x < y) ? x : y
-
-// g++ desvioDeRota.cpp -o desvioDeRota
+#define SWAP(a,b) a^=b^=a^=b;
 
 int main()
 {
-    int N, M, C, K, i, j, k, aux, custo, sair;
+    int N, M, C, K, a, b, k, custo;
+    std::list<int> aberto;
+    std::list<int>::iterator it;
+
     while(1)
     {
-        sair = 1;
-        scanf(" %d %d %d %d", &N, &M, &C, &K);
-        if(!((4 <= N <= 250) && (3 <= M <= N*(N-1)/2) && (2 <= C <= N-1) && (C <= K <= N-1)))
+        std::cin >> N >> M >> C >> K;
+        if((N == 0) && (M == 0) && (C == 0) && (K == 0))
             return 0;
 
-        int matAdj[N][N], d[N];
-        for(i = 0; i < N; i ++)
-            for(j = 0; j < i; j ++)
-                matAdj[i][j] = matAdj[j][i] = Inf;
-
-        for(aux = 0; aux < M; aux ++)
+        int adj[N][N];
+        int d[N];
+        for (size_t i = 0; i < N; i++)
         {
-            scanf(" %d %d %d", &i, &j, &k);
-            if(!((0 <= i) && (j <= N-1) && (i != j) && (0 <= k <= 250)))
-                return 0;
-            matAdj[i][j] = matAdj[j][i] = k;
+            d[i] = Inf;
+            aberto.push_back(i);
+            for (size_t j = 0; j < N; j++)
+            {
+                adj[i][j] = Inf;
+            }
         }
-        if(K < C-1)
+        
+        for (size_t i = 0; i < M; i++)
         {
-            d[C-1] = 0;
-            for(aux = K; aux < C; aux ++)
-                d[C-1] += matAdj[aux][aux+1];
-            std::cout << d[C-1] << std::endl;
-            sair = 0;
+            std::cin >> a >> b >> k;
+            if(a > b)
+            {
+                SWAP(a,b);
+            }
+            if((a >= C-1) && (b >= C-1))
+            {
+                adj[a][b] = adj[b][a] = k;
+            }
+            else if(b == a+1)
+            {
+                adj[a][b] = k;
+            }
+            else if(b >= C-1)
+            {
+                adj[b][a] = k;
+            }
+        }
+        
+        if(K == C-1)
+        {
+            custo = 0;
+            aberto.clear();
+        }
+        else if(K < C-1)
+        {
+            custo = 0;
+            for (size_t i = K; i < C; i++)
+            {
+                custo += adj[i][i+1];
+            }
+            aberto.clear();
         }
         else
         {
-            for(aux = 0; aux < N; aux ++)
-                d[aux] = Inf; 
             d[K] = 0;
-            std::list<int> aberto;
-            std::list<int>::iterator itr;
-            for(aux = 0; aux < N; aux ++)
-                aberto.push_back(aux);
-            while((!aberto.empty()) && sair)
+            while (!aberto.empty())
             {
                 k = 0;
-                aux = Inf;
-                for (itr = aberto.begin(); itr != aberto.end(); itr++) 
+                a = Inf;
+                for (it = aberto.begin(); it != aberto.end(); it++) 
                 {
-                    aux = MIN(aux, d[*itr]);
-                    k = (aux == d[*itr]) ? (*itr) : k;
+                    a = MIN(a, d[*it]);
+                    k = (a == d[*it]) ? (*it) : k;
                 }
                 if(k == C-1)
                 {
-                    std::cout << d[C-1] << std::endl;
-                    sair = 0;
+                    custo = d[C-1];
+                    aberto.clear();
                 }
                 else
                 {
                     aberto.remove(k);
-                    for (itr = aberto.begin(); itr != aberto.end(); itr++) 
+                    for (it = aberto.begin(); it != aberto.end(); it++) 
                     {
-                        custo = MIN(d[*itr], d[k] + matAdj[k][*itr]);
-                        d[*itr] = (custo < d[*itr]) ? custo : d[*itr];
-                        if(*itr < C-1)
-                        {
-                            for(aux = (*itr)+1; aux < C-1; aux ++)
-                                d[*itr] += matAdj[aux-1][aux];
-                        }
+                        custo = MIN(d[*it], d[k] + adj[k][*it]);
+                        d[*it] = (custo < d[*it]) ? custo : d[*it];
                     }
                 }
             }
         }
+        std::cout << custo << std::endl;
     }
     return 0;
 }
