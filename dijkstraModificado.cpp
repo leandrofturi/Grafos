@@ -14,6 +14,8 @@ int main()
     {
         std::cin >> N >> M;
 
+        if(std::cin.eof()) break;
+
         int adj[N][N];
         int d[N];
         for(int i = 0; i < N; i++)
