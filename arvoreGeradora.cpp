@@ -1,6 +1,6 @@
 #include <iostream>
 
-#define INF 1073741823
+#define INF 623754001
 #define MIN(x,y) (x < y) ? x : y
 
 int main() {
@@ -20,12 +20,12 @@ int main() {
 
     int w, u = 0;
     int min;
-    VLinha[0] = 1;
-    for(int i = 0; i < N; i++) {
-        L[i] = (adj[i] != 0) ? adj[i] : INF;
+    for(int i = 1; i < N; i++) {
+        L[i] = (adj[i] != 0) ? adj[i] : INF-1;
     }
+    VLinha[u] = 1;
 
-    for(int faltam = N; faltam > 0; faltam--) {
+    for(int faltam = N-1; faltam > 0; faltam--) {
         min = INF;
         for(int i = 0; i < N; i++) {
             if(!VLinha[i]) {
@@ -33,9 +33,8 @@ int main() {
                 w = (min == L[i]) ? i : w;
             }
         }
-        if(L[w] == INF)
-            break;
 
+        VLinha[w] = 1;
         min = INF;
         for(int i = 1; i < N; i++) {
             if(VLinha[i] && adj[i + N*w]) {
@@ -43,7 +42,6 @@ int main() {
                 u = (min == adj[w + N*i]) ? i : u;
             }
         }
-        VLinha[w] = 1;
 
         total += adj[u + N*w];
 
@@ -52,7 +50,6 @@ int main() {
                 if((L[i] > adj[i + N*w]) && adj[i + N*w])
                     L[i] = adj[i + N*w];
         }
-        w = 0;
     }
 
     std::cout << total << std::endl;
