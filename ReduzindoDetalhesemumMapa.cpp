@@ -36,7 +36,7 @@ int main() {
 
         VLinha[w] = 1;
         min = INF;
-        for(int i = 1; i < N; i++) {
+        for(int i = 0; i < N; i++) {
             if(VLinha[i] && adj[i + N*w]) {
                 min = MIN(min, adj[w + N*i]);
                 u = (min == adj[w + N*i]) ? i : u;
@@ -45,7 +45,7 @@ int main() {
 
         total += adj[u + N*w];
 
-        for(int i = 0; i < N; i++) {
+        for(int i = 1; i < N; i++) {
             if(!VLinha[i])
                 if((L[i] > adj[i + N*w]) && adj[i + N*w])
                     L[i] = adj[i + N*w];
