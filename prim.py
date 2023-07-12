@@ -11,25 +11,41 @@ def min_d(d, aberto):
     return min_idx
 
 
-def prim(adj):
-    V = set(range(len(adj)))
+def prim(adj, sparse=False):
+    if sparse:
+        V = set(range(adj.shape[0]))
+    else:
+        V = set(range(len(adj)))
     T = set()
     u = 0
     Vl = {u}
     L = [inf for _ in V]
     for v in V - Vl:
-        if adj[u][v]:
-            L[v] = adj[u][v]
+        if sparse:
+            if adj[(u, v)]:
+                L[v] = adj[(u, v)]
+        else:
+            if adj[u][v]:
+                L[v] = adj[u][v]
     while Vl != V:
         w = min_d(L, V - Vl)
         for vl in Vl:
-            if adj[vl][w]:
-                u = vl
-                break
+            if sparse:
+                if adj[(vl, w)]:
+                    u = vl
+                    break
+            else:
+                if adj[vl][w]:
+                    u = vl
+                    break
         e = (u, w, L[w])
         T.add(e)
         Vl.add(w)
         for v in V - Vl:
-            if adj[v][w] and adj[v][w] < L[v]:
-                L[v] = adj[v][w]
+            if sparse:
+                if adj[(v, w)] and adj[(v, w)] < L[v]:
+                    L[v] = adj[(v, w)]
+            else:
+                if adj[v][w] and adj[v][w] < L[v]:
+                    L[v] = adj[v][w]
     return T

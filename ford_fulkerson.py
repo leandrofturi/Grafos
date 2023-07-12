@@ -20,7 +20,8 @@ def bfs(s, t, antecessor, adj):
     return False
 
 
-def ford_fulkerson(source, target, adj):
+def ford_fulkerson(source, target, _adj):
+    adj = _adj.copy()
     V = range(len(adj))
     antecessor = [-1 for _ in V]
     f = 0

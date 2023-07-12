@@ -18,18 +18,34 @@ class DisjointSet:
             self.rank[root1] += 1
 
 
-def kruskal(adj):
-    V = set(range(len(adj)))
-    E = []
-    for i in V:
-        for j in V:
-            if adj[i][j]:
-                E.append((i, j, adj[i][j]))
+def kruskal(adj, la=[], sparse=False):
+    if not la:
+        if sparse:
+            V = set(range(adj.shape[0]))
+        else:
+            V = set(range(len(adj)))
+        E = []
+        for i in V:
+            for j in V:
+                if sparse:
+                    if adj[(i, j)]:
+                        E.append((i, j, adj[(i, j)]))
+                else:
+                    if adj[i][j]:
+                        E.append((i, j, adj[i][j]))
+    else:
+        E = la
     E = sorted(E, key=lambda x: x[-1])
-    ds = DisjointSet(len(adj))
+    if sparse:
+        ds = DisjointSet(adj.shape[0])
+    else:
+        ds = DisjointSet(len(adj))
     T = set()
+    n_max = adj.shape[0] - 1
     for e in E:
         if ds.find(e[0]) != ds.find(e[1]):
             ds.union(e[0], e[1])
             T.add(e)
+        if len(T) >= n_max:
+            break
     return T

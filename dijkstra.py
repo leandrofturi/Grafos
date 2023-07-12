@@ -10,8 +10,11 @@ def min_d(d, aberto):
             min_idx = i
     return min_idx
 
-def dijkstra(vini, adj):
-    V = range(len(adj))
+def dijkstra(vini, adj, sparse=False):
+    if sparse:
+        V = range(adj.shape[0])
+    else:
+        V = range(len(adj))
     d = [inf for _ in V]
     d[vini] = 0
     fechado = set()
@@ -22,9 +25,16 @@ def dijkstra(vini, adj):
         fechado.add(k)
         aberto.remove(k)
         for i in aberto:
-            if adj[k][i]:
-                custo = min(d[i], d[k] + adj[k][i])
-                if custo < d[i]:
-                    d[i] = custo
-                    anterior[i] = k
+            if sparse:
+                if adj[(k, i)]:
+                    custo = min(d[i], d[k] + adj[(k, i)])
+                    if custo < d[i]:
+                        d[i] = custo
+                        anterior[i] = k
+            else:
+                if adj[k][i]:
+                    custo = min(d[i], d[k] + adj[k][i])
+                    if custo < d[i]:
+                        d[i] = custo
+                        anterior[i] = k
     return d
