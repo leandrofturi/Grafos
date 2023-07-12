@@ -1,10 +1,12 @@
 import gzip
+import time
 import os.path
 import requests
 from prim import prim
 from scipy import sparse
 from kruskal import kruskal
 from dijkstra import dijkstra
+from datetime import timedelta
 from ford_fulkerson import ford_fulkerson
 
 
@@ -79,10 +81,22 @@ ford_fulkerson(0, 5, toy2)
 url = "http://www.diag.uniroma1.it/challenge9/data/USA-road-d/USA-road-d.NY.gr.gz"
 NY, la_NY = load_adj(url)
 
+start = time.time()
 d = dijkstra(0, NY, sparse=True)
-p = prim(NY, sparse=True)
-k = kruskal(NY, la=la_NY, sparse=True)
+end = time.time()
+print(str(timedelta(seconds=end - start)))
 
+start = time.time()
+p = prim(NY, sparse=True)
+end = time.time()
+print(sum([x[2] for x in p]))
+print(str(timedelta(seconds=end - start)))
+
+start = time.time()
+k = kruskal(NY, la=la_NY, sparse=True)
+end = time.time()
+print(sum([x[2] for x in k]))
+print(str(timedelta(seconds=end - start)))
 
 ################################################################################
 # BAY ##########################################################################
@@ -91,9 +105,22 @@ k = kruskal(NY, la=la_NY, sparse=True)
 url = "http://www.diag.uniroma1.it/challenge9/data/USA-road-d/USA-road-d.BAY.gr.gz"
 BAY, la_BAY = load_adj(url)
 
+start = time.time()
 d = dijkstra(0, BAY, sparse=True)
+end = time.time()
+print(str(timedelta(seconds=end - start)))
+
+start = time.time()
 p = prim(BAY, sparse=True)
+end = time.time()
+print(sum([x[2] for x in p]))
+print(str(timedelta(seconds=end - start)))
+
+start = time.time()
 k = kruskal(BAY, la=la_BAY, sparse=True)
+end = time.time()
+print(sum([x[2] for x in k]))
+print(str(timedelta(seconds=end - start)))
 
 
 ################################################################################
@@ -103,9 +130,22 @@ k = kruskal(BAY, la=la_BAY, sparse=True)
 url = "http://www.diag.uniroma1.it/challenge9/data/USA-road-d/USA-road-d.COL.gr.gz"
 COL, la_COL = load_adj(url)
 
+start = time.time()
 d = dijkstra(0, COL, sparse=True)
+end = time.time()
+print(str(timedelta(seconds=end - start)))
+
+start = time.time()
 p = prim(COL, sparse=True)
+end = time.time()
+print(sum([x[2] for x in p]))
+print(str(timedelta(seconds=end - start)))
+
+start = time.time()
 k = kruskal(COL, la=la_COL, sparse=True)
+end = time.time()
+print(sum([x[2] for x in k]))
+print(str(timedelta(seconds=end - start)))
 
 
 ################################################################################
