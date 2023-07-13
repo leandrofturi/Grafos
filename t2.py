@@ -1,5 +1,6 @@
 import gzip
 import time
+import pickle
 import os.path
 import requests
 from prim import prim
@@ -78,6 +79,7 @@ ford_fulkerson(0, 5, toy2)
 # NY ###########################################################################
 ################################################################################
 
+print("NY")
 url = "http://www.diag.uniroma1.it/challenge9/data/USA-road-d/USA-road-d.NY.gr.gz"
 NY, la_NY = load_adj(url)
 
@@ -98,10 +100,18 @@ end = time.time()
 print(sum([x[2] for x in k]))
 print(str(timedelta(seconds=end - start)))
 
+file = open('NY.dat', 'wb')
+d = {"dijkstra": d, "prim": p, "kruskal": k}
+pickle.dump(d, file)
+file.close()
+print("")
+
+
 ################################################################################
 # BAY ##########################################################################
 ################################################################################
 
+print("BAY")
 url = "http://www.diag.uniroma1.it/challenge9/data/USA-road-d/USA-road-d.BAY.gr.gz"
 BAY, la_BAY = load_adj(url)
 
@@ -122,11 +132,18 @@ end = time.time()
 print(sum([x[2] for x in k]))
 print(str(timedelta(seconds=end - start)))
 
+file = open('BAY.dat', 'wb')
+d = {"dijkstra": d, "prim": p, "kruskal": k}
+pickle.dump(d, file)
+file.close()
+print("")
+
 
 ################################################################################
 # COL ##########################################################################
 ################################################################################
 
+print("COL")
 url = "http://www.diag.uniroma1.it/challenge9/data/USA-road-d/USA-road-d.COL.gr.gz"
 COL, la_COL = load_adj(url)
 
@@ -146,6 +163,12 @@ k = kruskal(COL, la=la_COL, sparse=True)
 end = time.time()
 print(sum([x[2] for x in k]))
 print(str(timedelta(seconds=end - start)))
+
+file = open('COL.dat', 'wb')
+d = {"dijkstra": d, "prim": p, "kruskal": k}
+pickle.dump(d, file)
+file.close()
+print("")
 
 
 ################################################################################

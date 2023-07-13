@@ -1,3 +1,4 @@
+import sys
 from math import inf
 
 
@@ -21,11 +22,16 @@ def bfs(s, t, antecessor, adj):
 
 
 def ford_fulkerson(source, target, _adj):
+    print("ford_fulkerson")
     adj = _adj.copy()
     V = range(len(adj))
     antecessor = [-1 for _ in V]
     f = 0
+    iter = 0
     while bfs(source, target, antecessor, adj):
+        sys.stdout.write("\r%d" % iter)
+        sys.stdout.flush()
+        iter = iter+1
         fi = inf
         s = target
         while s != source:
@@ -38,4 +44,5 @@ def ford_fulkerson(source, target, _adj):
             adj[u][v] -= fi
             adj[v][u] += fi
             v = antecessor[v]
+    sys.stdout.write("\n\n")
     return f

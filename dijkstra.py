@@ -1,3 +1,4 @@
+import sys
 from math import inf
 
 
@@ -11,6 +12,7 @@ def min_d(d, aberto):
     return min_idx
 
 def dijkstra(vini, adj, sparse=False):
+    print("dijkstra")
     if sparse:
         V = range(adj.shape[0])
     else:
@@ -20,7 +22,12 @@ def dijkstra(vini, adj, sparse=False):
     fechado = set()
     aberto = set(V)
     anterior = [None for _ in V]
+    iter = 0
+    n = len(V)
     while aberto:
+        sys.stdout.write("\r%f" % (iter*100.0 / n))
+        sys.stdout.flush()
+        iter = iter+1
         k = min_d(d, aberto)
         fechado.add(k)
         aberto.remove(k)
@@ -37,4 +44,5 @@ def dijkstra(vini, adj, sparse=False):
                     if custo < d[i]:
                         d[i] = custo
                         anterior[i] = k
+    sys.stdout.write("\n\n")
     return d

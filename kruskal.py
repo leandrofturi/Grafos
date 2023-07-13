@@ -1,3 +1,6 @@
+import sys
+
+
 class DisjointSet:
     def __init__(self, n):
         self.parent = list(range(n))
@@ -19,6 +22,7 @@ class DisjointSet:
 
 
 def kruskal(adj, la=[], sparse=False):
+    print("kruskal")
     if not la:
         if sparse:
             V = set(range(adj.shape[0]))
@@ -41,11 +45,19 @@ def kruskal(adj, la=[], sparse=False):
     else:
         ds = DisjointSet(len(adj))
     T = set()
-    n_max = adj.shape[0] - 1
+    if sparse:
+        n_max = adj.shape[0] - 1
+    else:
+        n_max = len(adj) - 1
+    iter = 0
     for e in E:
+        sys.stdout.write("\r%f" % (iter*100.0 / n_max))
+        sys.stdout.flush()
+        iter = iter+1
         if ds.find(e[0]) != ds.find(e[1]):
             ds.union(e[0], e[1])
             T.add(e)
         if len(T) >= n_max:
             break
+    sys.stdout.write("\n\n")
     return T
